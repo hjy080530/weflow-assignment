@@ -1,11 +1,13 @@
 'use client'
 
+import { useState } from 'react'
 import type { Reservation, Status } from '@/types'
 import { downloadReservationsExcel } from '@/lib/excel'
 
 interface ReservationTableProps {
   reservations: Reservation[]
   filter: Status | '전체'
+  searchKeyword: string
   onUpdateStatus: (id: string, status: Status) => Promise<void>
   onDelete: (id: string) => Promise<void>
 }
@@ -19,11 +21,17 @@ const STATUS_COLORS: Record<Status, string> = {
 export default function ReservationTable({
   reservations,
   filter,
+  searchKeyword,
   onUpdateStatus,
   onDelete,
 }: ReservationTableProps) {
-  const filtered =
-    filter === '전체' ? reservations : reservations.filter((r) => r.status === filter)
+  const filtered = reservations.filter((reservation) => {
+    const matchesStatus = filter === '전체' || reservation.status === filter
+    const matchesName =
+      searchKeyword.length === 0 || reservation.name.toLowerCase().includes(searchKeyword)
+
+    return matchesStatus && matchesName
+  })
 
   return (
     <div className="rounded-2xl bg-white border border-[#E5E8EB] shadow-sm overflow-hidden">
@@ -81,6 +89,8 @@ function ReservationRow({
   onUpdateStatus: (id: string, status: Status) => Promise<void>
   onDelete: (id: string) => Promise<void>
 }) {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
     <>
       <tr
@@ -104,7 +114,15 @@ function ReservationRow({
           {r.date} {r.time}
         </td>
         <td className="px-4 py-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              onClick={() => setIsOpen((prev) => !prev)}
+              className="text-xs border border-[#E5E8EB] text-[#4E5968] px-2 py-1 rounded-lg hover:border-[#1B64DA] hover:text-[#1B64DA] transition-colors"
+              aria-expanded={isOpen}
+            >
+              상세 {isOpen ? '▲' : '▼'}
+            </button>
             <button
               data-testid="btn-inprogress"
               onClick={() => onUpdateStatus(r.id, '진행중')}
@@ -129,7 +147,7 @@ function ReservationRow({
           </div>
         </td>
       </tr>
-      {(r.service_type || r.business_type || r.note) && (
+      {isOpen && (r.service_type || r.business_type || r.note) && (
         <tr className="border-b border-[#E5E8EB] bg-[#F9FAFB]">
           <td colSpan={6} className="px-6 py-3 text-xs text-[#4E5968]">
             <span className="mr-4">제작종류: {r.service_type}</span>

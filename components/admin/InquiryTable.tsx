@@ -1,11 +1,13 @@
 'use client'
 
+import { useState } from 'react'
 import type { Inquiry, Status } from '@/types'
 import { downloadInquiriesExcel } from '@/lib/excel'
 
 interface InquiryTableProps {
   inquiries: Inquiry[]
   filter: Status | '전체'
+  searchKeyword: string
   onUpdateStatus: (id: string, status: Status) => Promise<void>
   onDelete: (id: string) => Promise<void>
 }
@@ -19,11 +21,17 @@ const STATUS_COLORS: Record<Status, string> = {
 export default function InquiryTable({
   inquiries,
   filter,
+  searchKeyword,
   onUpdateStatus,
   onDelete,
 }: InquiryTableProps) {
-  const filtered =
-    filter === '전체' ? inquiries : inquiries.filter((i) => i.status === filter)
+  const filtered = inquiries.filter((inquiry) => {
+    const matchesStatus = filter === '전체' || inquiry.status === filter
+    const matchesName =
+      searchKeyword.length === 0 || inquiry.name.toLowerCase().includes(searchKeyword)
+
+    return matchesStatus && matchesName
+  })
 
   return (
     <div className="rounded-2xl bg-white border border-[#E5E8EB] shadow-sm overflow-hidden">
@@ -80,6 +88,8 @@ function InquiryRow({
   onUpdateStatus: (id: string, status: Status) => Promise<void>
   onDelete: (id: string) => Promise<void>
 }) {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
     <>
       <tr
@@ -100,7 +110,15 @@ function InquiryRow({
           {inq.created_at ? new Date(inq.created_at).toLocaleDateString('ko-KR') : '-'}
         </td>
         <td className="px-4 py-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              onClick={() => setIsOpen((prev) => !prev)}
+              className="text-xs border border-[#E5E8EB] text-[#4E5968] px-2 py-1 rounded-lg hover:border-[#1B64DA] hover:text-[#1B64DA] transition-colors"
+              aria-expanded={isOpen}
+            >
+              상세 {isOpen ? '▲' : '▼'}
+            </button>
             <button
               data-testid="btn-inprogress"
               onClick={() => onUpdateStatus(inq.id, '진행중')}
@@ -125,7 +143,7 @@ function InquiryRow({
           </div>
         </td>
       </tr>
-      {(inq.service_type || inq.business_type || inq.note) && (
+      {isOpen && (inq.service_type || inq.business_type || inq.note) && (
         <tr className="border-b border-[#E5E8EB] bg-[#F9FAFB]">
           <td colSpan={5} className="px-6 py-3 text-xs text-[#4E5968]">
             <span className="mr-4">제작종류: {inq.service_type}</span>

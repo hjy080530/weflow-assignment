@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { createServiceClient } from '@/lib/supabase'
 import { isAuthorized } from '@/lib/admin-auth'
+import { updateInquiryStatus, updateReservationStatus } from '@/lib/queries'
 import type { Status } from '@/types'
 
 export async function PATCH(request: Request) {
@@ -13,11 +13,15 @@ export async function PATCH(request: Request) {
   const { table, id, status }: { table: 'reservations' | 'inquiries'; id: string; status: Status } =
     await request.json()
 
-  const client = createServiceClient()
-  const { error } = await client.from(table).update({ status }).eq('id', id)
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  try {
+    if (table === 'reservations') {
+      await updateReservationStatus(id, status)
+    } else {
+      await updateInquiryStatus(id, status)
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '상태 변경에 실패했습니다.'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 
   return NextResponse.json({ ok: true })

@@ -36,7 +36,7 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center px-4">
+    <div className="flex flex-1 items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm bg-white rounded-2xl border border-[#E5E8EB] shadow-sm p-8">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-[#191F28]">WEFLOW</h1>

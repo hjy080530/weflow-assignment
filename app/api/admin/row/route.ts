@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { createServiceClient } from '@/lib/supabase'
 import { isAuthorized } from '@/lib/admin-auth'
+import { deleteInquiry, deleteReservation } from '@/lib/queries'
 
 export async function DELETE(request: Request) {
   const cookieStore = await cookies()
@@ -12,11 +12,15 @@ export async function DELETE(request: Request) {
   const { table, id }: { table: 'reservations' | 'inquiries'; id: string } =
     await request.json()
 
-  const client = createServiceClient()
-  const { error } = await client.from(table).delete().eq('id', id)
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  try {
+    if (table === 'reservations') {
+      await deleteReservation(id)
+    } else {
+      await deleteInquiry(id)
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '삭제에 실패했습니다.'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 
   return NextResponse.json({ ok: true })

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
 import type { DiagnosisFormData } from '@/types'
 
 type InquiryInput = Omit<DiagnosisFormData, 'agreed'>
@@ -22,18 +21,15 @@ export function useInquiry(): UseInquiryReturn {
     setSuccess(false)
 
     try {
-      const { error: insertError } = await supabase.from('inquiries').insert([
-        {
-          name: data.name,
-          phone: data.phone,
-          service_type: data.service_type,
-          business_type: data.business_type,
-          note: data.note,
-        },
-      ])
+      const response = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
 
-      if (insertError) {
-        throw insertError
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null
+        throw new Error(payload?.error ?? '문의 제출에 실패했습니다.')
       }
 
       setSuccess(true)

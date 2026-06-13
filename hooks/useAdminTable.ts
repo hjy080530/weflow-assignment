@@ -11,6 +11,7 @@ interface UseAdminTableReturn {
   filter: FilterValue
   setFilter: (filter: FilterValue) => void
   loading: boolean
+  refresh: () => Promise<void>
   updateStatus: (
     table: 'reservations' | 'inquiries',
     id: string,
@@ -24,6 +25,22 @@ export function useAdminTable(): UseAdminTableReturn {
   const [inquiries, setInquiries] = useState<Inquiry[]>([])
   const [filter, setFilter] = useState<FilterValue>('전체')
   const [loading, setLoading] = useState(true)
+
+  // 개발 서버 첫 컴파일·SSE 재연결 중 끊긴 연결은 일시적이므로 1회 재시도한다.
+  const mutate = useCallback(async (input: RequestInfo, init: RequestInit): Promise<boolean> => {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const res = await fetch(input, init)
+        return res.ok
+      } catch {
+        if (attempt === 0) {
+          await new Promise((resolve) => window.setTimeout(resolve, 300))
+          continue
+        }
+      }
+    }
+    return false
+  }, [])
 
   const fetchAll = useCallback(async () => {
     try {
@@ -40,10 +57,19 @@ export function useAdminTable(): UseAdminTableReturn {
   }, [])
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchAll()
-    const interval = setInterval(fetchAll, 5000)
-    return () => clearInterval(interval)
+    const initialFetchTimer = window.setTimeout(() => {
+      void fetchAll()
+    }, 0)
+    const eventSource = new EventSource('/api/admin/stream')
+
+    eventSource.onmessage = () => {
+      void fetchAll()
+    }
+
+    return () => {
+      window.clearTimeout(initialFetchTimer)
+      eventSource.close()
+    }
   }, [fetchAll])
 
   async function updateStatus(
@@ -58,18 +84,13 @@ export function useAdminTable(): UseAdminTableReturn {
       setInquiries((prev) => prev.map((i) => (i.id === id ? { ...i, status } : i)))
     }
 
-    try {
-      const res = await fetch('/api/admin/status', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ table, id, status }),
-      })
-      if (!res.ok) {
-        console.error(`${table} 상태 업데이트 오류`)
-        await fetchAll()
-      }
-    } catch (err) {
-      console.error(`${table} 상태 업데이트 오류:`, err)
+    const ok = await mutate('/api/admin/status', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ table, id, status }),
+    })
+    if (!ok) {
+      console.warn(`${table} 상태 업데이트 실패 — 서버 데이터로 복원합니다.`)
       await fetchAll()
     }
   }
@@ -85,18 +106,13 @@ export function useAdminTable(): UseAdminTableReturn {
       setInquiries((prev) => prev.filter((i) => i.id !== id))
     }
 
-    try {
-      const res = await fetch('/api/admin/row', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ table, id }),
-      })
-      if (!res.ok) {
-        console.error(`${table} 삭제 오류`)
-        await fetchAll()
-      }
-    } catch (err) {
-      console.error(`${table} 삭제 오류:`, err)
+    const ok = await mutate('/api/admin/row', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ table, id }),
+    })
+    if (!ok) {
+      console.warn(`${table} 삭제 실패 — 서버 데이터로 복원합니다.`)
       await fetchAll()
     }
   }
@@ -107,6 +123,7 @@ export function useAdminTable(): UseAdminTableReturn {
     filter,
     setFilter,
     loading,
+    refresh: fetchAll,
     updateStatus,
     deleteRow,
   }
