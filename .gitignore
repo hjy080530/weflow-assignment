@@ -53,3 +53,6 @@ pnpm-workspace.yaml
 # temp scripts
 check-ui.mjs
 check-slider.mjs
+
+# local sqlite
+/data/
