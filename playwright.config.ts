@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: './tests',
   globalSetup: './tests/global-setup.ts',
   fullyParallel: false,
-  // 단일 sqlite·Realtime 상태를 공유하므로 직렬 실행으로 상호 간섭과
+  // 단일 Supabase 테스트 데이터 상태를 공유하므로 직렬 실행으로 상호 간섭과
   // 콜드 컴파일 동시 부하를 막는다.
   workers: 1,
   retries: 1,

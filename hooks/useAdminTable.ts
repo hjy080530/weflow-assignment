@@ -60,6 +60,9 @@ export function useAdminTable(): UseAdminTableReturn {
     const initialFetchTimer = window.setTimeout(() => {
       void fetchAll()
     }, 0)
+    const pollingTimer = window.setInterval(() => {
+      void fetchAll()
+    }, 3000)
     const eventSource = new EventSource('/api/admin/stream')
 
     eventSource.onmessage = () => {
@@ -68,6 +71,7 @@ export function useAdminTable(): UseAdminTableReturn {
 
     return () => {
       window.clearTimeout(initialFetchTimer)
+      window.clearInterval(pollingTimer)
       eventSource.close()
     }
   }, [fetchAll])
