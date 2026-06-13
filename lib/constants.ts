@@ -15,6 +15,133 @@ export const TIME_SLOTS: string[] = [
   '17:00', '17:30', '18:00', '18:30',
 ]
 
+export interface PlanDefinition {
+  name: string
+  originalPrice: number
+  salePrice: number
+  discountRate: string
+  isMaster?: boolean
+  features: string[]
+  perMonth?: boolean
+}
+
+export interface AdSettingDefinition {
+  name: string
+  originalPrice: number
+  salePrice: number
+  discountRate: string
+  features: string[]
+}
+
+export const BUILD_PLANS: PlanDefinition[] = [
+  {
+    name: 'START',
+    originalPrice: 498000,
+    salePrice: 249000,
+    discountRate: '50% OFF',
+    features: ['랜딩 1p', '3~4일 제작', '반응형', '문의폼 연동', '기본 SEO'],
+  },
+  {
+    name: 'GROW',
+    originalPrice: 1980000,
+    salePrice: 990000,
+    discountRate: '50% OFF',
+    features: ['홈 5p', '1주 제작', '반응형', '문의폼 연동', '카카오 상담연동', '기본SEO'],
+  },
+  {
+    name: 'MASTER',
+    originalPrice: 2980000,
+    salePrice: 1490000,
+    discountRate: '50% OFF',
+    isMaster: true,
+    features: ['홈+랜딩', '1~2주', '프리미엄 디자인', '예약·문의 시스템', 'SEO최적화', '광고 전환구조 설계'],
+  },
+]
+
+export const CARE_PLANS: PlanDefinition[] = [
+  {
+    name: 'WE CARE',
+    originalPrice: 170000,
+    salePrice: 89000,
+    discountRate: '47% OFF',
+    perMonth: true,
+    features: [
+      '월 유지보수 2회',
+      '블로그 업로드 월 1회',
+      '인스타 업로드 월 1회',
+      '스레드 업로드 월 1회',
+      '광고 세팅 할인 적용',
+    ],
+  },
+  {
+    name: 'FLOW CARE',
+    originalPrice: 378000,
+    salePrice: 189000,
+    discountRate: '50% OFF',
+    perMonth: true,
+    features: [
+      '월 유지보수 4회',
+      '블로그 업로드 월 2회',
+      '인스타 업로드 월 2회',
+      '스레드 업로드 월 2회',
+      '광고 세팅 할인 적용',
+    ],
+  },
+  {
+    name: 'WEFLOW CARE',
+    originalPrice: 678000,
+    salePrice: 339000,
+    discountRate: '50% OFF',
+    isMaster: true,
+    perMonth: true,
+    features: [
+      '월 유지보수 8회',
+      '블로그 업로드 월 4회',
+      '인스타 업로드 월 4회',
+      '스레드 업로드 월 4회',
+      '광고 세팅 할인 적용',
+    ],
+  },
+]
+
+export const AD_SETTING_PLANS: AdSettingDefinition[] = [
+  {
+    name: '네이버 키워드',
+    originalPrice: 298000,
+    salePrice: 149000,
+    discountRate: '50% OFF',
+    features: [
+      '키워드분석',
+      '광고세팅지원',
+      '광고문구제작',
+      '문의 구조 연결',
+      '채널연동',
+      '성과최적화',
+    ],
+  },
+  {
+    name: '당근 플레이스',
+    originalPrice: 158000,
+    salePrice: 79000,
+    discountRate: '50% OFF',
+    features: [
+      '지역키워드분석',
+      '광고세팅지원',
+      '광고문구제작',
+      '문의 구조 연결',
+      '채널연동',
+      '랜딩 연결 지원',
+    ],
+  },
+]
+
+export const PLAN_NOTES = [
+  '※ 도메인은 고객 명의로 진행되며 비용은 별도입니다. 위플로우 등록/연결은 무료로 지원합니다.',
+  '※ 광고비는 고객이 직접 결제하며, 위플로우는 광고 운영 및 세팅만 담당합니다.',
+  '※ 유지보수는 텍스트·이미지·링크 등 경미한 수정 기준입니다.',
+  '※ 페이지 추가 및 기능 추가는 별도 비용이 발생합니다.',
+]
+
 export const REVIEW_LIST = [
   { name: '김민준', business: 'PT샵', rating: 5, content: '홈페이지 제작 후 문의가 3배 늘었어요. 정말 만족합니다!' },
   { name: '이서연', business: '필라테스', rating: 5, content: '빠른 제작과 꼼꼼한 사후 관리에 감동받았습니다.' },
@@ -65,6 +192,7 @@ export const BUSINESS_TYPES = [
 
 export const EXTERNAL_LINKS = {
   phone: '010-2971-7280',
+  email: 'contact@weflowlab.kr',
   kakao: 'http://pf.kakao.com/_xntCbX',
   blog: 'https://m.blog.naver.com/weflowlab',
   instagram: 'https://www.instagram.com/weflowlab.kr',
