@@ -8,32 +8,32 @@ const STEPS: Step[] = [
   {
     number: '01',
     title: '상담·진단',
-    description: '현재 상황 파악, 목표 설정, 맞춤 솔루션 제안',
+    description: '업종·방향성 확인, 목표 설정, 맞춤 솔루션 제안',
   },
   {
     number: '02',
     title: '기획·설계',
-    description: '사이트맵 구성, 와이어프레임, UI/UX 설계',
+    description: '문의 구조·전략 설계, 사이트맵·와이어프레임 구성',
   },
   {
     number: '03',
     title: '디자인',
-    description: '브랜드 아이덴티티 반영, 반응형 디자인 제작',
+    description: '브랜드 맞춤 인터페이스 구성, 반응형 디자인 제작',
   },
   {
     number: '04',
-    title: '개발·제작',
-    description: 'Next.js 기반 고속 개발, SEO 최적화 코드',
+    title: '개발·테스트',
+    description: '구현, 최적화, 점검 — QA 후 도메인 연결·배포',
   },
   {
     number: '05',
-    title: '검수·배포',
-    description: 'QA 테스트, 도메인 연결, Vercel 배포',
+    title: 'SEO 상단등록',
+    description: '네이버·구글·사이트맵 등록, 검색 상위 노출 설정',
   },
   {
     number: '06',
     title: '광고운영·사후관리',
-    description: '네이버/당근 광고, 콘텐츠 운영, 무기한 CS',
+    description: '인스타·블로그·키워드 광고, 무기한 CS·수정 지원',
   },
 ]
 
@@ -64,13 +64,12 @@ export default function ProcessSteps({ variant = 'simple' }: ProcessStepsProps) 
     )
   }
 
-  // detailed variant
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {STEPS.map((step) => (
         <div
           key={step.number}
-          className="rounded-2xl bg-white border border-[#E5E8EB] shadow-sm hover:shadow-md transition-shadow p-6 md:p-8 flex flex-col gap-3"
+          className="rounded-2xl bg-white border border-[#E5E8EB] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 p-6 md:p-8 flex flex-col gap-3"
         >
           <span className="text-xs font-bold text-[#1B64DA] tracking-widest">{step.number}</span>
           <h3 className="text-lg font-semibold text-[#191F28]">{step.title}</h3>

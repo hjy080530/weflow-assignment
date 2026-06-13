@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -88,11 +89,15 @@ export default function Navbar() {
     >
       <nav className="max-w-6xl mx-auto px-4 md:px-8 flex items-center justify-between h-16">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-1 font-bold text-xl tracking-tight text-[#1B64DA]">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <rect width="28" height="28" rx="8" fill="#1B64DA" />
-            <path d="M6 8l4 10 4-8 4 8 4-10" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+        <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tight text-[#1B64DA] hover:opacity-80 active:scale-95 transition-all duration-150">
+          <Image
+            src="/logo.png"
+            alt="WEFLOW 로고"
+            width={32}
+            height={32}
+            className="h-8 w-8 rounded-lg"
+            priority
+          />
           WEFLOW
         </Link>
 

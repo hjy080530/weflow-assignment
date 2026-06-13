@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { REVIEW_LIST } from '@/lib/constants'
 
 interface Review {
@@ -11,7 +12,7 @@ interface Review {
 
 function ReviewCard({ review }: { review: Review }) {
   return (
-    <div className="min-w-[280px] max-w-[280px] rounded-2xl bg-white border border-[#E5E8EB] p-5 flex flex-col gap-2 flex-shrink-0 hover:shadow-md transition-shadow duration-200">
+    <div className="min-w-[280px] max-w-[280px] rounded-2xl bg-white border border-[#E5E8EB] p-5 flex flex-col gap-2 flex-shrink-0 hover:shadow-md hover:-translate-y-1 transition-all duration-200">
       <div className="text-[#F5A623] text-base leading-none" aria-label={`별점 ${review.rating}점`}>
         {'★'.repeat(review.rating)}
       </div>
@@ -31,8 +32,8 @@ function SliderRow({ reviews, reverse }: { reviews: Review[]; reverse?: boolean 
   return (
     <div className="slider-row overflow-hidden w-full">
       <div
-        className={reverse ? 'slider-track-right' : 'slider-track-left'}
-        style={{ display: 'flex', gap: '16px', width: `${trackWidth}px` }}
+        className={`flex gap-4 ${reverse ? 'slider-track-right' : 'slider-track-left'}`}
+        style={{ width: `${trackWidth}px` }}
       >
         {doubled.map((review, i) => (
           <ReviewCard key={`${review.name}-${i}`} review={review} />
@@ -64,12 +65,12 @@ export default function ReviewSlider() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 md:px-8 mt-8 text-right">
-        <a
+        <Link
           href="/diagnosis"
           className="inline-flex items-center gap-1 text-sm font-semibold text-[#1B64DA] hover:text-[#1348A8] transition-colors"
         >
           후기 더보기 →
-        </a>
+        </Link>
       </div>
     </section>
   )

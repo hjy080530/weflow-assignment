@@ -14,7 +14,7 @@ export default function CaseCard({ name, business, image, url }: CaseCardProps) 
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="rounded-2xl bg-white border border-[#E5E8EB] shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden group"
+      className="rounded-2xl bg-white border border-[#E5E8EB] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col overflow-hidden group"
     >
       <div className="relative aspect-[4/3] bg-[#F2F4F6] overflow-hidden">
         <Image

@@ -57,7 +57,7 @@ export default function DiagnosisForm() {
     return (
       <div
         data-testid="submit-success"
-        className="rounded-2xl bg-white border border-[#E5E8EB] shadow-sm p-8 text-center"
+        className="animate-bounce-in rounded-2xl bg-white border border-[#E5E8EB] shadow-sm p-8 text-center"
       >
         <div className="text-4xl mb-4">✅</div>
         <h3 className="text-xl font-bold text-[#191F28] mb-2">문의가 접수되었습니다!</h3>
@@ -104,7 +104,7 @@ export default function DiagnosisForm() {
           onChange={handleChange}
           required
           placeholder="홍길동"
-          className="rounded-xl border border-[#E5E8EB] px-4 py-3 text-base text-[#191F28] placeholder:text-[#8B95A1] focus:outline-none focus:border-[#1B64DA] transition-colors"
+          className="rounded-xl border border-[#E5E8EB] px-4 py-3 text-base text-[#191F28] placeholder:text-[#8B95A1] focus:outline-none focus:border-[#1B64DA] focus:ring-2 focus:ring-[#1B64DA]/20 transition-all duration-150"
         />
       </div>
 
@@ -120,7 +120,7 @@ export default function DiagnosisForm() {
           onChange={handleChange}
           required
           placeholder="010-0000-0000"
-          className="rounded-xl border border-[#E5E8EB] px-4 py-3 text-base text-[#191F28] placeholder:text-[#8B95A1] focus:outline-none focus:border-[#1B64DA] transition-colors"
+          className="rounded-xl border border-[#E5E8EB] px-4 py-3 text-base text-[#191F28] placeholder:text-[#8B95A1] focus:outline-none focus:border-[#1B64DA] focus:ring-2 focus:ring-[#1B64DA]/20 transition-all duration-150"
         />
       </div>
 
@@ -155,7 +155,7 @@ export default function DiagnosisForm() {
           value={form.business_type}
           onChange={handleChange}
           placeholder="예: 카페, 미용실, 학원 등"
-          className="rounded-xl border border-[#E5E8EB] px-4 py-3 text-base text-[#191F28] placeholder:text-[#8B95A1] focus:outline-none focus:border-[#1B64DA] transition-colors"
+          className="rounded-xl border border-[#E5E8EB] px-4 py-3 text-base text-[#191F28] placeholder:text-[#8B95A1] focus:outline-none focus:border-[#1B64DA] focus:ring-2 focus:ring-[#1B64DA]/20 transition-all duration-150"
         />
       </div>
 
@@ -170,7 +170,7 @@ export default function DiagnosisForm() {
           onChange={handleChange}
           rows={4}
           placeholder="원하시는 사항이나 참고 사이트 URL 등을 자유롭게 적어주세요."
-          className="rounded-xl border border-[#E5E8EB] px-4 py-3 text-base text-[#191F28] placeholder:text-[#8B95A1] focus:outline-none focus:border-[#1B64DA] transition-colors resize-none"
+          className="rounded-xl border border-[#E5E8EB] px-4 py-3 text-base text-[#191F28] placeholder:text-[#8B95A1] focus:outline-none focus:border-[#1B64DA] focus:ring-2 focus:ring-[#1B64DA]/20 transition-all duration-150 resize-none"
         />
       </div>
 
@@ -192,8 +192,14 @@ export default function DiagnosisForm() {
       <button
         type="submit"
         disabled={loading}
-        className="bg-[#1B64DA] hover:bg-[#1348A8] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl px-6 py-3 transition-colors text-base"
+        className="btn-ripple flex items-center justify-center gap-2 bg-[#1B64DA] hover:bg-[#1348A8] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl px-6 py-3 transition-all duration-150 text-base"
       >
+        {loading && (
+          <svg className="animate-spin w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+          </svg>
+        )}
         {loading ? '제출 중...' : '무료진단 후 견적받기'}
       </button>
     </form>

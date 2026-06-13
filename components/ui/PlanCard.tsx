@@ -1,9 +1,10 @@
 import Link from 'next/link'
+import AnimatedPrice from '@/components/ui/AnimatedPrice'
 
 interface PlanCardProps {
   name: string
-  originalPrice: string
-  salePrice: string
+  originalPrice: number
+  salePrice: number
   discountRate: string
   isMaster?: boolean
   features: string[]
@@ -21,7 +22,7 @@ export default function PlanCard({
 }: PlanCardProps) {
   return (
     <div
-      className={`relative flex flex-col rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow p-6 md:p-8 ${
+      className={`relative flex flex-col rounded-2xl bg-white shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 p-6 md:p-8 ${
         isMaster
           ? 'border-2 border-[#1B64DA]'
           : 'border border-[#E5E8EB]'
@@ -30,21 +31,30 @@ export default function PlanCard({
       {isMaster && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
           <span className="bg-[#1B64DA] text-white text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
-            추천 플랜
+            👑 추천 플랜
           </span>
         </div>
       )}
 
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-[#191F28]">{name}</h3>
+        <h3 className="text-lg font-semibold text-[#191F28]">
+          {name}
+          {isMaster ? ' 👑' : ''}
+        </h3>
       </div>
 
       <div className="mb-5">
-        <span className="text-sm text-[#8B95A1] line-through block">
-          {originalPrice}
+        <span className="text-sm text-[#8B95A1] line-through block tabular-nums">
+          <AnimatedPrice amount={originalPrice} className="count-flash" suffix="원" duration={1100} />
+          {perMonth ? '/월' : ''}
         </span>
         <div className="flex items-baseline gap-1 flex-wrap">
-          <span className="text-3xl font-bold text-[#F04452]">{salePrice}</span>
+          <AnimatedPrice
+            amount={salePrice}
+            className="text-3xl font-bold text-[#F04452] tabular-nums count-flash"
+            suffix="원"
+            duration={1500}
+          />
           {perMonth && (
             <span className="text-sm text-[#4E5968]">/월</span>
           )}
@@ -66,7 +76,7 @@ export default function PlanCard({
 
       <Link
         href="/diagnosis"
-        className="block text-center bg-[#1B64DA] hover:bg-[#1348A8] text-white font-semibold rounded-xl px-6 py-3 transition-colors"
+        className="btn-ripple block text-center bg-[#1B64DA] hover:bg-[#1348A8] active:scale-[0.97] text-white font-semibold rounded-xl px-6 py-3 transition-all duration-150"
       >
         무료상담 시작하기
       </Link>

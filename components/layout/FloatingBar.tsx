@@ -46,12 +46,15 @@ const floatingItems = [
 ]
 
 export default function FloatingBar() {
+  const commonClass =
+    'group flex flex-col items-center justify-center gap-1 flex-1 py-2.5 text-[#4E5968] hover:text-[#1B64DA] hover:bg-[#1B64DA]/5 active:scale-95 active:bg-[#1B64DA]/10 transition-all duration-150'
+  const iconClass = 'transition-transform duration-200 group-hover:scale-110 group-hover:-translate-y-0.5'
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E8EB] z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E8EB] z-50 animate-slide-up-bar">
       <div className="flex items-stretch justify-around max-w-6xl mx-auto">
         {floatingItems.map((item) => {
-          const commonClass =
-            'flex flex-col items-center justify-center gap-1 flex-1 py-2.5 text-[#4E5968] hover:text-[#1B64DA] hover:bg-[#1B64DA]/5 transition-colors'
+          const testId = `floating-${item.label === '24시간 상담' ? 'call' : item.label === '카카오톡 문의' ? 'kakao' : item.label === '블로그' ? 'blog' : 'diagnosis'}`
 
           if (item.external) {
             return (
@@ -60,17 +63,19 @@ export default function FloatingBar() {
                 href={item.href}
                 target={item.href.startsWith('tel:') ? '_self' : '_blank'}
                 rel="noopener noreferrer"
+                aria-label={item.label}
+                data-testid={testId}
                 className={commonClass}
               >
-                <span>{item.icon}</span>
+                <span className={iconClass}>{item.icon}</span>
                 <span className="text-[11px] font-medium leading-tight">{item.label}</span>
               </a>
             )
           }
 
           return (
-            <Link key={item.label} href={item.href} className={commonClass}>
-              <span>{item.icon}</span>
+            <Link key={item.label} href={item.href} aria-label={item.label} data-testid={testId} className={commonClass}>
+              <span className={iconClass}>{item.icon}</span>
               <span className="text-[11px] font-medium leading-tight">{item.label}</span>
             </Link>
           )
