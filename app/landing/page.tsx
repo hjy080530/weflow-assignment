@@ -1,15 +1,14 @@
-import Link from 'next/link'
 import DiagnosisForm from '@/components/ui/DiagnosisForm'
 import ProcessSteps from '@/components/ui/ProcessSteps'
 import ReviewSlider from '@/components/ui/ReviewSlider'
 import PlanCard from '@/components/ui/PlanCard'
+import Link from 'next/link'
+import { AD_SETTING_PLANS, BUILD_PLANS, CARE_PLANS } from '@/lib/constants'
 
-const CARE_PLANS = [
-  { title: 'WE CARE', desc: '월 콘텐츠 2회 + 기본 CS + 소셜 관리', price: '89,000원~/월' },
-  { title: 'FLOW CARE', desc: '월 콘텐츠 8회 + CS 우선지원 + 광고 모니터링', price: '189,000원~/월' },
-  { title: 'WEFLOW CARE', desc: '무제한 콘텐츠 + 24시간 CS + 광고 최적화 + SNS 풀운영', price: '339,000원~/월' },
-  { title: '네이버 키워드 광고', desc: '검색 상단 노출, 키워드 세팅 대행', price: '149,000원~' },
-  { title: '당근 플레이스', desc: '지역 마케팅, 플레이스 최적화 대행', price: '79,000원~' },
+const ALL_PLAN_CARDS = [
+  ...BUILD_PLANS.map((plan) => ({ ...plan, perMonth: plan.perMonth ?? false, isMaster: plan.isMaster ?? false })),
+  ...CARE_PLANS.map((plan) => ({ ...plan, perMonth: plan.perMonth ?? false, isMaster: plan.isMaster ?? false })),
+  ...AD_SETTING_PLANS.map((plan) => ({ ...plan, perMonth: false, isMaster: false })),
 ]
 
 const INQUIRY_POINTS = [
@@ -43,12 +42,12 @@ export default function LandingPage() {
               >
                 무료 진단 후 견적받기 →
               </a>
-              <Link
-                href="/cases"
+              <a
+                href="#diagnosis-form"
                 className="border border-[#E5E8EB] hover:border-[#1B64DA] text-[#191F28] rounded-xl px-6 py-3 transition-colors"
               >
                 실제 제작 성공 보기 →
-              </Link>
+              </a>
             </div>
           </div>
         </section>
@@ -62,15 +61,15 @@ export default function LandingPage() {
             <div className="flex flex-col gap-4">
               {CARE_PLANS.map((plan) => (
                 <div
-                  key={plan.title}
+                  key={plan.name}
                   className="rounded-2xl bg-white border border-[#E5E8EB] shadow-sm p-5 flex items-center gap-4"
                 >
                   <div className="flex-1">
-                    <p className="font-semibold text-[#191F28]">{plan.title}</p>
-                    <p className="text-sm text-[#4E5968] mt-0.5">{plan.desc}</p>
+                    <p className="font-semibold text-[#191F28]">{plan.name}</p>
+                    <p className="text-sm text-[#4E5968] mt-0.5">{plan.features.join(' / ')}</p>
                   </div>
                   <span className="text-sm font-bold text-[#F04452] whitespace-nowrap">
-                    {plan.price}
+                    {`${plan.salePrice.toLocaleString('ko-KR')}원~/월`}
                   </span>
                 </div>
               ))}
@@ -100,35 +99,25 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* 4. 가격 카드 (제작 플랜 3개) */}
+        {/* 4. 가격 카드 (8개 전체) */}
         <section className="py-20 md:py-28 bg-white">
           <div className="max-w-2xl mx-auto px-4 md:px-8">
             <h2 className="text-2xl md:text-3xl font-bold text-[#191F28] mb-8">
               제작 플랜 & 가격안내
             </h2>
             <div className="flex flex-col gap-5">
-              <PlanCard
-                name="START"
-                originalPrice="498,000원"
-                salePrice="249,000원"
-                discountRate="50% OFF"
-                features={['랜딩페이지 1종', '모바일 반응형', '기본 SEO', '1개월 무료 수정']}
-              />
-              <PlanCard
-                name="GROW"
-                originalPrice="1,980,000원"
-                salePrice="990,000원"
-                discountRate="50% OFF"
-                features={['홈페이지 5페이지', '모바일 반응형', 'SEO 최적화', '3개월 무료 수정', '카카오톡 연동']}
-              />
-              <PlanCard
-                name="MASTER"
-                originalPrice="2,980,000원"
-                salePrice="1,490,000원"
-                discountRate="50% OFF"
-                isMaster
-                features={['홈페이지 10페이지', 'SEO 풀패키지', '6개월 무료 수정', '광고 세팅 포함', '브랜딩 컨설팅']}
-              />
+              {ALL_PLAN_CARDS.map((plan) => (
+                <PlanCard
+                  key={plan.name}
+                  name={plan.name}
+                  originalPrice={plan.originalPrice}
+                  salePrice={plan.salePrice}
+                  discountRate={plan.discountRate}
+                  features={plan.features}
+                  isMaster={plan.isMaster}
+                  perMonth={plan.perMonth}
+                />
+              ))}
             </div>
             <div className="mt-6 text-center">
               <Link href="/plan" className="text-[#1B64DA] text-sm font-medium hover:underline">

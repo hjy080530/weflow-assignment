@@ -5,6 +5,8 @@ import { CASE_LIST } from '@/lib/constants'
 import CaseCard from '@/components/ui/CaseCard'
 import StatsSection from '@/components/ui/StatsSection'
 import ScrollReveal from '@/components/ui/ScrollReveal'
+import TiltCard from '@/components/ui/TiltCard'
+import DotGrid from '@/components/ui/DotGrid'
 
 const BENEFITS = [
   { title: 'WEFLOW 케어플랜', desc: '제작·광고·운영 원스톱 서비스' },
@@ -33,8 +35,14 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       {/* 메인 배너 */}
-      <section className="bg-[#F9FAFB] py-20 md:py-28">
-        <div className="max-w-6xl mx-auto px-4 md:px-8">
+      <section className="relative bg-[#F9FAFB] py-20 md:py-28 overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/background.png')", opacity: 0.2 }}
+          aria-hidden="true"
+        />
+        <DotGrid />
+        <div className="relative max-w-6xl mx-auto px-4 md:px-8">
           <p className="hero-label text-sm font-medium text-[#1B64DA] mb-4">
             랜딩&홈페이지 제작 · 광고 운영 · 검색 상단 노출 · 맞춤형 웹 솔루션
           </p>
@@ -49,19 +57,19 @@ export default function HomePage() {
           <div className="hero-cta flex flex-wrap gap-3 mb-10">
             <Link
               href="/diagnosis"
-              className="bg-[#1B64DA] hover:bg-[#1348A8] active:scale-95 text-white font-semibold rounded-xl px-6 py-3 transition-all duration-150 shadow-md"
+              className="shimmer bg-[#1B64DA] hover:bg-[#1348A8] active:scale-95 text-white font-semibold rounded-xl px-6 py-3 transition-all duration-150 shadow-md"
             >
               무료 진단 신청
             </Link>
             <Link
               href="/cases"
-              className="border border-[#E5E8EB] hover:border-[#1B64DA] active:scale-95 text-[#191F28] rounded-xl px-6 py-3 transition-all duration-150"
+              className="shimmer border border-[#E5E8EB] hover:border-[#1B64DA] active:scale-95 text-[#191F28] font-semibold rounded-xl px-6 py-3 transition-all duration-150"
             >
               성공 사례 보기
             </Link>
             <Link
               href="/landing"
-              className="border border-[#1B64DA] text-[#1B64DA] rounded-xl px-6 py-3 transition-all duration-150 hover:bg-[#1B64DA]/5 active:scale-95"
+              className="shimmer border border-[#E5E8EB] hover:border-[#1B64DA] active:scale-95 text-[#191F28] font-semibold rounded-xl px-6 py-3 transition-all duration-150"
             >
               WEFLOW 랜딩 페이지
             </Link>
@@ -102,10 +110,12 @@ export default function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mb-12">
             {BENEFITS.map((b, i) => (
               <ScrollReveal key={b.title} delay={i * 80}>
-                <div className="rounded-2xl bg-white border border-[#E5E8EB] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 p-6 flex flex-col gap-2 h-full">
-                  <h3 className="text-base font-semibold text-[#191F28]">{b.title}</h3>
-                  <p className="text-sm text-[#4E5968]">{b.desc}</p>
-                </div>
+                <TiltCard className="h-full">
+                  <div className="rounded-2xl bg-white border border-[#E5E8EB] shadow-sm card-glow p-6 flex flex-col gap-2 h-full">
+                    <h3 className="text-base font-semibold text-[#191F28]">{b.title}</h3>
+                    <p className="text-sm text-[#4E5968]">{b.desc}</p>
+                  </div>
+                </TiltCard>
               </ScrollReveal>
             ))}
           </div>
@@ -150,8 +160,8 @@ export default function HomePage() {
               </Link>
             </ScrollReveal>
             <div className="md:w-2/3">
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {CASE_LIST.slice(0, 4).map((c, i) => (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                {CASE_LIST.slice(0, 5).map((c, i) => (
                   <ScrollReveal key={c.id} delay={i * 80}>
                     <CaseCard name={c.name} business={c.business} image={c.image} url={c.url} />
                   </ScrollReveal>
@@ -227,12 +237,14 @@ export default function HomePage() {
             ))}
           </div>
           <ScrollReveal delay={200}>
-            <Link
-              href="/diagnosis"
-              className="inline-block bg-[#1B64DA] hover:bg-[#1348A8] active:scale-95 text-white font-semibold rounded-xl px-8 py-4 transition-all duration-150 text-lg shadow-md"
-            >
-              무료진단 후 견적 받기
-            </Link>
+            <span className="pulse-ring inline-block rounded-xl">
+              <Link
+                href="/diagnosis"
+                className="shimmer inline-block bg-[#1B64DA] hover:bg-[#1348A8] active:scale-95 text-white font-semibold rounded-xl px-8 py-4 transition-all duration-150 text-lg shadow-md"
+              >
+                무료진단 후 견적 받기
+              </Link>
+            </span>
           </ScrollReveal>
         </div>
       </section>

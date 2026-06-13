@@ -48,6 +48,7 @@ export default function ReservationPage() {
   })
   const [selectedDate, setSelectedDate] = useState<string>('')
   const [selectedTime, setSelectedTime] = useState<string>('')
+  const [customTime, setCustomTime] = useState('')
 
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
@@ -63,6 +64,7 @@ export default function ReservationPage() {
 
   const daysInMonth = getDaysInMonth(year, month)
   const firstDay = getFirstDayOfMonth(year, month)
+  const effectiveTime = customTime.trim() || selectedTime
 
   const calendarCells: (number | null)[] = []
   for (let i = 0; i < firstDay; i++) calendarCells.push(null)
@@ -94,12 +96,12 @@ export default function ReservationPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!selectedDate || !selectedTime) return
+    if (!selectedDate || !effectiveTime) return
     await submit({
       name,
       phone,
       date: selectedDate,
-      time: selectedTime,
+      time: effectiveTime,
       service_type: serviceType,
       business_type: businessType,
       note,
@@ -120,7 +122,7 @@ export default function ReservationPage() {
           </div>
           <h2 className="text-2xl font-bold text-[#191F28] mb-3">예약 신청 완료!</h2>
           <p className="text-[#4E5968] leading-relaxed mb-2">
-            <span className="font-semibold text-[#191F28]">{selectedDate}</span> {selectedTime} 예약이 접수되었습니다.
+            <span className="font-semibold text-[#191F28]">{selectedDate}</span> {effectiveTime} 예약이 접수되었습니다.
           </p>
           <p className="text-sm text-[#8B95A1]">확인 후 빠르게 연락드리겠습니다. 감사합니다.</p>
         </div>
@@ -216,6 +218,7 @@ export default function ReservationPage() {
                     onClick={() => {
                       setSelectedDate(dateStr)
                       setSelectedTime('')
+                      setCustomTime('')
                     }}
                     className={[
                       'aspect-square flex items-center justify-center text-sm rounded-full transition-colors font-medium',
@@ -268,7 +271,10 @@ export default function ReservationPage() {
                       type="button"
                       disabled={disabled}
                       data-testid="time-slot"
-                      onClick={() => setSelectedTime(slot)}
+                      onClick={() => {
+                        setSelectedTime(slot)
+                        setCustomTime('')
+                      }}
                       className={[
                         'py-2 px-1 text-sm font-medium rounded-xl transition-colors',
                         disabled
@@ -282,6 +288,26 @@ export default function ReservationPage() {
                     </button>
                   )
                 })}
+              </div>
+            )}
+
+            {selectedDate && (
+              <div className="mt-5">
+                <label className="block text-sm font-medium text-[#191F28] mb-1.5" htmlFor="custom-time">
+                  원하시는 시간대(직접 입력)
+                </label>
+                <input
+                  id="custom-time"
+                  name="custom_time"
+                  type="text"
+                  value={customTime}
+                  onChange={(event) => {
+                    setCustomTime(event.target.value)
+                    setSelectedTime('')
+                  }}
+                  placeholder="예: 19:00 이후, 14:15"
+                  className="w-full rounded-xl border border-[#E5E8EB] px-4 py-3 text-[#191F28] placeholder:text-[#8B95A1] focus:outline-none focus:border-[#1B64DA] focus:ring-2 focus:ring-[#1B64DA]/20 transition-colors text-sm"
+                />
               </div>
             )}
           </section>
@@ -405,18 +431,18 @@ export default function ReservationPage() {
               )}
 
               {/* Selected summary */}
-              {(selectedDate || selectedTime) && (
+              {(selectedDate || effectiveTime) && (
                 <div className="rounded-xl bg-[#1B64DA]/5 border border-[#1B64DA]/20 px-4 py-3 text-sm text-[#1B64DA]">
                   <span className="font-semibold">예약 정보: </span>
                   {selectedDate || '날짜 미선택'}
-                  {selectedTime ? ` · ${selectedTime}` : ' · 시간 미선택'}
+                  {effectiveTime ? ` · ${effectiveTime}` : ' · 시간 미선택'}
                 </div>
               )}
 
               {/* Submit */}
               <button
                 type="submit"
-                disabled={loading || !selectedDate || !selectedTime || !agreed}
+                disabled={loading || !selectedDate || !effectiveTime || !agreed}
                 className="w-full bg-[#1B64DA] hover:bg-[#1348A8] text-white font-semibold rounded-xl px-6 py-4 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-base"
               >
                 {loading ? '제출 중...' : '예약 신청하기'}
